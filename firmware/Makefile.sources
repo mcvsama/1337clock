@@ -1,0 +1,15 @@
+# vim:ts=4
+
+include lib/mulabs-avr/src/Makefile.sources
+
+HEADERS += $(patsubst %,lib/mulabs-avr/src/%,$(MULABS_AVR_HEADERS))
+SOURCES += $(patsubst %,lib/mulabs-avr/src/%,$(MULABS_AVR_SOURCES))
+
+SOURCES += 1337-firmware.cc
+
+OBJECTS += $(call mkobjs, $(NODEP_SOURCES))
+OBJECTS += $(call mkobjs, $(SOURCES))
+
+TARGETS += $(distdir)/1337-firmware.hex
+LINKEDS += $(distdir)/1337-firmware.elf
+

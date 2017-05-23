@@ -1,0 +1,25 @@
+#!/bin/sh
+
+if [ "$(whoami)" != "root" ]; then
+	exec sudo "$0" "$@"
+fi
+
+PROG=dragon_isp
+
+file="$1"
+if [ "$file" = "" ]; then
+	echo Specify .hex filename
+	exit 1
+fi
+
+# To use internal 8 MHz oscillator, program fuse CKSEL to 0b0010.
+# So with default other bits, the fuse will be 0b01010010.
+# But we don't want 8x divider on system clock, so disable CKDIV bit (set 1).
+# It will be 0b11010010 ← This is FUSE LOW BYTE. That's 0xd2.
+
+fuse_8_mhz_internal_clk="lfuse:w:0xd2:m"
+fuse_disable_jtag="hfuse:w:0xd9:m"
+avrdude -c $PROG -B 2.0 -p atmega32u4 -U flash:w:"$1":i
+#-U $fuse_disable_jtag
+#-U $fuse_8_mhz_internal_clk
+

@@ -1,0 +1,14 @@
+$(LINKEDS): $(OBJECTS)
+
+$(TARGETS): $(LINKEDS)
+
+%.hex: %.elf
+	$(ELF_TO_HEX) $< $@
+
+info: $(LINKEDS)
+	echo $(LINKEDS)
+	avr-size --format=avr --mcu=$(MCU) $(patsubst %.hex,%.elf,$<)
+
+upload:
+	./atmega32u4-upload build/avr/1337-firmware.hex
+
